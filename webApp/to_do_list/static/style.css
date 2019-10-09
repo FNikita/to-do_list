@@ -1,0 +1,15 @@
+body {
+    background-color: gold;
+    width: 520px;
+    font-size: 26px;
+    font-style: italic;
+}
+
+.delete {
+    text-decoration: line-through;
+}
+
+
+ul {
+    list-style: none;
+}

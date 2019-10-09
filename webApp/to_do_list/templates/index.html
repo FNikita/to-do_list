@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title> To do Django!!!!!</title>
+        {% load static %}
+        <link href="{% static  'style.css' %}" type="text/css" rel="stylesheet" >
+    </head>
+    <body>
+        <header>
+            <h1> To do list! </h1>
+        </header>
+        <div class="viev">
+            {%  if items %}
+                <ul>
+                    {% for item in items %}
+                        {% if item.check %}
+                            <li> <a > {{item.id}} </a> {{item.text}}</li>
+                        {% else %}
+                            <li class="delete"> <a > {{item.id}} </a> {{item.text}}</li>
+                        {% endif %}
+                    {%endfor%}
+                </ul>
+            {% else %}
+                <p> Not information </p>
+            {% endif %}
+        </div>
+    </body>
+</html>
