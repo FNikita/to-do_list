@@ -9,19 +9,28 @@
             <h1> To do list! </h1>
         </header>
         <div class="viev">
-            {%  if items %}
-                <ul>
-                    {% for item in items %}
-                        {% if item.check %}
-                            <li> <a > {{item.id}} </a> {{item.text}}</li>
-                        {% else %}
-                            <li class="delete"> <a > {{item.id}} </a> {{item.text}}</li>
-                        {% endif %}
-                    {%endfor%}
-                </ul>
-            {% else %}
-                <p> Not information </p>
-            {% endif %}
+            <form method="POST" id="list_value">
+                {%  if items %}
+                    <ul>
+                        {% for item in items %}
+                            {% if item.check %}
+                                <li> <a > {{item.id}} </a> <input type="checkbox" name="checks[]" value="false"> {{item.text}}</li>
+                            {% else %}
+                                <li class="complate"> <a > {{item.id}} </a> <input type="checkbox" name="checks[]" value="true">  {{item.text}}</li>
+                            {% endif %}
+                        {%endfor%}
+                    </ul>
+                {% else %}
+                    <p> Not information </p>
+                {% endif %}
+            </form>
         </div>
+
+        <form action="/to_do_list/add-task/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input id="in-text" type="text" name="text_input" value="">
+            <input type="submit" value="Send">
+        </form>
     </body>
 </html>

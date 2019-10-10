@@ -1,11 +1,10 @@
 body {
-    background-color: gold;
     width: 520px;
     font-size: 26px;
     font-style: italic;
 }
 
-.delete {
+.complate {
     text-decoration: line-through;
 }
 
