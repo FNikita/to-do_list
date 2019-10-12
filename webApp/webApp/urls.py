@@ -13,6 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
+
+from django.contrib.staticfiles.views import serve
+
+from django.views.decorators.cache import never_cache
+
+from . import settings
+
+
+
+
+
 from django.contrib import admin
 from django.urls import path, include
 
@@ -20,3 +32,8 @@ urlpatterns = [
     path('to_do_list/', include('to_do_list.urls')),
     path('admin/', admin.site.urls),
 ]
+
+
+if settings.DEBUG:
+
+    urlpatterns += static(settings.STATIC_URL, view=never_cache(serve))

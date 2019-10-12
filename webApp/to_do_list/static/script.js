@@ -5,7 +5,7 @@ $(function() {
 
         $.ajax({
             type: "POST",
-            url: "/add-task/",
+            url: "ajax_send/",
             success: function (response) {
                 $(".contant").text("Ajax OK");
             }

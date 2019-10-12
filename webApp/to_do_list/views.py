@@ -31,6 +31,7 @@ def index(request):
     return HttpResponse(template.render(context, request))
 
 
-def ajax_request(request):
-    if request.method == 'GET':
-        return HttpResponse("olala")
+def creat_ajax(request):
+    if request.method == 'POST':
+        return HttpResponse("Hel")
+    return HttpResponse("adfaf")

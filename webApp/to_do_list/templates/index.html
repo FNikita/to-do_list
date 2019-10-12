@@ -43,10 +43,10 @@
             <input type="submit" value="Send">
         </form>
 
-        <div class="contant">
-
-        </div>
-        <button class="btn"> Push me</button>
+        <form action="/to_do_list/ajax_send/" method="POST">
+            {% csrf_token %}
+            <button id="btn" > Push me</button>
+        </form>
     </body>
 
 </html>
