@@ -3,6 +3,8 @@
         <title> To do Django!!!!!</title>
         {% load static %}
         <link href="{% static  'style.css' %}" type="text/css" rel="stylesheet" >
+        <script type="text/javascript" src="{% static  'jquery.js' %}"></script>
+        <script type="text/javascript" src=" {% static  'script.js' %}"></script>
     </head>
     <body>
         <header>
@@ -14,9 +16,9 @@
                     <ul>
                         {% for item in items %}
                             {% if item.check %}
-                                <li> <a > {{item.id}} </a> <input type="checkbox" name="checks[]" value="false"> {{item.text}}</li>
+                            <li class="complate"> <a > {{item.id}}. </a> <input type="checkbox" name="checks[]" value="true">  {{item.text}}</li>
                             {% else %}
-                                <li class="complate"> <a > {{item.id}} </a> <input type="checkbox" name="checks[]" value="true">  {{item.text}}</li>
+                            <li> <a > {{item.id}}. </a> <input type="checkbox" name="checks[]" value="false"> {{item.text}}</li>
                             {% endif %}
                         {%endfor%}
                     </ul>
@@ -29,8 +31,22 @@
         <form action="/to_do_list/add-task/" method="post">
             {% csrf_token %}
             {{ form }}
-            <input id="in-text" type="text" name="text_input" value="">
+            <input id="text_input" type="text" name="text_input" value="">
             <input type="submit" value="Send">
         </form>
+
+        <form action="/to_do_list/del-task/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <span> Del item:  </span>
+            <input id="delete-item" type="checkbox" name="delete-item" value="">
+            <input type="submit" value="Send">
+        </form>
+
+        <div class="contant">
+
+        </div>
+        <button class="btn"> Push me</button>
     </body>
+
 </html>
