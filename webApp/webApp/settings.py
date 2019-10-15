@@ -56,7 +56,7 @@ ROOT_URLCONF = 'webApp.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['to_do_list/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -126,3 +126,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATIC_ROOT = "webApp/to_do_list/static"
+
+
+DATE_INPUT_FORMATS = [r'%d-%m-%Y %hh:%mm:%ss']

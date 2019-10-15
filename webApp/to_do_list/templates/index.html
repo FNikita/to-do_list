@@ -4,49 +4,42 @@
         {% load static %}
         <link href="{% static  'style.css' %}" type="text/css" rel="stylesheet" >
         <script type="text/javascript" src="{% static  'jquery.js' %}"></script>
-        <script type="text/javascript" src=" {% static  'script.js' %}"></script>
+        <script type="text/javascript" src="{% static  'script.js' %}"></script>
     </head>
     <body>
         <header>
             <h1> To do list! </h1>
         </header>
-        <div class="viev">
-            <form method="POST" id="list_value">
-                {%  if items %}
-                    <ul>
-                        {% for item in items %}
-                            {% if item.check %}
-                            <li class="complate"> <a > {{item.id}}. </a> <input type="checkbox" name="checks[]" value="true">  {{item.text}}</li>
-                            {% else %}
-                            <li> <a > {{item.id}}. </a> <input type="checkbox" name="checks[]" value="false"> {{item.text}}</li>
-                            {% endif %}
-                        {%endfor%}
-                    </ul>
-                {% else %}
-                    <p> Not information </p>
-                {% endif %}
-            </form>
+        <div class="enable-all">
+            <p>
+                Seelect all task as completed <input id="check-all" type="checkbox"> <button class="delete-btn-all"> del all en</button>
+            </p>
+            
         </div>
-
-        <form action="/to_do_list/add-task/" method="post">
+        {% include "list-items.html" %}
+        <form action="/to_do_list/add-task/" method="POST">
             {% csrf_token %}
             {{ form }}
             <input id="text_input" type="text" name="text_input" value="">
             <input type="submit" value="Send">
         </form>
+        <select id="select-type">
+            <option value='all'> All </option>
+            <option value='active'> Active </option>
+            <option value='done'> Done </option>
+        </select>
 
-        <form action="/to_do_list/del-task/" method="post">
-            {% csrf_token %}
-            {{ form }}
-            <span> Del item:  </span>
-            <input id="delete-item" type="checkbox" name="delete-item" value="">
-            <input type="submit" value="Send">
-        </form>
+        <div class="information">
+            <p> Tasks all: <span id="all-task-count" >  </span>  </p>
+            <p> Tasks are complate: <span id="complate-task-count" >  </span>  </p>
+        </div>
 
-        <form action="/to_do_list/ajax_send/" method="POST">
-            {% csrf_token %}
-            <button id="btn" > Push me</button>
-        </form>
+
+        <div id="pagination">
+
+        </div>
+        <div class="contant">
+        </div>
     </body>
 
 </html>

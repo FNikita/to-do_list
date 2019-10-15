@@ -6,14 +6,8 @@ class CreateInputForm(forms.Form):
     text_input = forms.CharField(label='text-input', max_length=100)
 
     def save(self):
-        post = itemLI(len(itemLI.objects.order_by('id')[:])+1, False, self.cleaned_data['text_input'])
+        if self.cleaned_data['text_input'] == itemLI.objects.all().latest('date').text:
+            return False
+        post = itemLI(text=self.cleaned_data['text_input'])
+        post.save()
         return post
-
-class CreatDeletForm(forms.Form):
-    delete_item = forms.BooleanField(label='delete-item')
-
-    def delete_li(self):
-        deleted_item = itemLI.objects.order_by('id')[0]
-        if deleted_item.delete()[0] == 1:
-            return True
-        return False
