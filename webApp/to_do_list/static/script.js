@@ -1,7 +1,8 @@
 $(function() {
     var old_text;
     var val_id;
-    var col_item_on_page = 12;
+    var col_btn;
+    var col_item_on_page = 10;
     var page_active = 1;
     count_task();
 
@@ -16,22 +17,6 @@ $(function() {
         });
     }
 
-    $(document).on("click", ".page", function() {
-        display($("#select-type option:selected").val(), $(this).attr('id'));
-        page_active = $(this).attr('id');
-    });
-
-    function display(type, page) {
-        $("li").hide();
-        if (type == "all") {
-            $("li").slice((page-1)*col_item_on_page, page*col_item_on_page).show();
-        } else if (type == "active") {
-            $(".done:not(:checked)").parent().slice((page-1)*col_item_on_page, page*col_item_on_page).show();
-        } else {
-            $(".done:checked").parent().slice((page-1)*col_item_on_page, page*col_item_on_page).show();
-        }
-    }
-
     function count_task() {
         var all_task = $("li").length;
         var complete_task = $(".done:checked").length;
@@ -43,6 +28,78 @@ $(function() {
             $("#complate-task-count").text(complete_task);
         }
     }
+
+    function display(type, page) {
+        $("li").hide();
+        if (type == "all") {
+            if (col_btn * col_item_on_page < $("li").length)
+                $("li").slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page ).show();
+            else {
+                page--;
+                $("li").slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page ).show();
+            }
+        } else if (type == "active") {
+            if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length )
+            $(".done:not(:checked)").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
+            else {
+                page--;
+                $(".done:not(:checked)").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
+            }
+        } else {
+            if (col_btn * col_item_on_page < $(".done:checked").parent().length  ) {
+                $(".done:checked").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
+            }
+            else {
+                page--;
+                $(".done:checked").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
+            }
+        }
+    }
+
+    
+
+    function renderBtn(col_batton) {
+        i = 0;
+        div_pagination = $("#pagination");
+        str = '';
+        if (col_batton > 0) {
+            while (i <= col_batton) {
+                str += `<button class='page' id='${i}'> ${i+1} </button>`;
+                i += 1;
+            }
+        }
+        div_pagination.html(str);
+    }
+
+    function paginationRender(type) {
+        if (type=="all") {
+            col_btn = Math.floor($("li").length / col_item_on_page);
+            if (col_btn * col_item_on_page < $("li").length ) {
+                renderBtn(col_btn);
+            } else {
+                renderBtn(col_btn-1);
+            }
+        } else if(type == "active") {
+            col_btn = Math.floor($(".done:not(:checked)").parent().length / col_item_on_page);
+            if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length)
+                renderBtn(col_btn);
+            else {
+                renderBtn(col_btn-1);
+            }
+        } else if(type=="done") {
+            col_btn = Math.floor($(".done:checked").parent().length / col_item_on_page);
+            if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length)
+            renderBtn(col_btn);
+            else {
+                renderBtn(col_btn-1);
+            }
+        }
+    }
+
+    $(document).on("click", ".page", function() {
+        display($("#select-type option:selected").val(), $(this).attr('id'));
+        page_active = $(this).attr('id');
+    });
 
     $(".done").change( function(e) {
         val_chek = $(this).is(":checked");
@@ -70,13 +127,13 @@ $(function() {
         } else {
             $(".done")
             .prop('checked', false)
+            .parent()
             .children('span')
             .removeClass("complate");
         }
         count_task();
-        display($("#select-type option:selected").val(), page_active);
         paginationRender($("#select-type option:selected").val());
-        //$("#select-type option:selected").val("all");
+        display($("#select-type option:selected").val(), page_active);
         ajax_Send("/to_do_list/ajax-req/", {action: "change_all", chek: chech_all});
     });
 
@@ -87,6 +144,7 @@ $(function() {
         ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
         count_task();
         paginationRender($("#select-type option:selected").val());
+        display($("#select-type option:selected").val(), page_active);
     });
 
     $(".delete-btn-all").click(function() {
@@ -95,6 +153,7 @@ $(function() {
         count_task();
         ajax_Send("/to_do_list/ajax-req/", {action: "del-all", id: chech_all});
         paginationRender($("#select-type option:selected").val());
+        display($("#select-type option:selected").val(), page_active);
     });
 
     $('.li-item').dblclick(function () { 
@@ -127,36 +186,15 @@ $(function() {
     });
 
     $("#select-type").change( function() {
+        page_active = 1;
         paginationRender($("#select-type option:selected").val());
-        display($("#select-type option:selected").val(), 1);
+        display($("#select-type option:selected").val(), page_active);
     });
 
-    function renderBtn(col_batton) {
-        i = 1;
-        div_pagination = $("#pagination");
-        str = '';
-        if (col_batton > 0) {
-            while (i <= col_batton+1) {
-                str += `<button class='page' id='${i}'> ${i} </button>`;
-                i += 1;
-            }
-        }
-        div_pagination.html(str);
-    }
-
-    function paginationRender(type) {
-        if (type=="all") {
-            col_btn = Math.floor($("li").length / col_item_on_page);
-            renderBtn(col_btn);
-        } else if(type == "active") {
-            col_btn = Math.floor($(".done:not(:checked)").parent().length / col_item_on_page);
-            renderBtn(col_btn);
-        } else if(type=="done") {
-            col_btn = Math.floor($(".done:checked").parent().length / col_item_on_page);
-            renderBtn(col_btn);
-        }
-    }
+    $(".sumbit-btn").click(function () {
+        page_active = Math.floor($("li").length / col_item_on_page);
+    });
 
     paginationRender($("#select-type option:selected").val());
-    display($("#select-type option:selected").val(), Math.floor($("li").length / col_item_on_page)+1);
+    display($("#select-type option:selected").val(), Math.floor($("li").length / col_item_on_page));
 });
