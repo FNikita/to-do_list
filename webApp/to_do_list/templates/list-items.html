@@ -1,17 +1,20 @@
+{% load static %}
 <div class="viev">
-        {%  if items %}
-            <ul>
-                {% for item in items %}
-                    {% if item.check %}
-                    <li id="{{item.id}}"> <input class="done" type="checkbox" checked> <span class="li-item complate"> {{item.text}} </span>
-                                                    <button class="delete-btn"> del </button> </li>
-                    {% else %}
-                    <li id="{{item.id}}"> <input class="done" type="checkbox">  <span class="li-item"> {{item.text}}  </span> 
-                                                    <button class="delete-btn"> del </button></li>
-                    {% endif %}
-                {%endfor%}
-            </ul>
-        {% else %}
-            <p> Not tasks </p>
-        {% endif %}
+    <ul>
+        {% for item in items %}
+            {% if item.check %}
+            <li id="{{item.id}}"> 
+                <input class="done" type="checkbox" checked> 
+                <span class="li-item complate"> {{item.text}}  </span>
+                <button class="btn delete-btn"><i class="fa fa-trash trash"></i></button>
+            </li>
+            {% else %}
+            <li id="{{item.id}}">
+                <input class="done" type="checkbox">  
+                <span class="li-item">{{item.text}}</span>
+                <button class="btn delete-btn"><i class="fa fa-trash trash"></i></button>                 
+            </li>
+            {% endif %}
+        {%endfor%}
+    </ul>
 </div>

@@ -1,9 +1,7 @@
 $(function() {
-    var old_text;
-    var val_id;
-    var col_btn;
-    var col_item_on_page = 10;
-    var page_active = 1;
+    var old_text, val_id, col_btn;
+    var col_item_on_page = 7;
+    var page_active = Math.ceil($("li").length / col_item_on_page)-1;
     count_task();
 
     function ajax_Send(new_url, new_data) {
@@ -12,14 +10,71 @@ $(function() {
             url: new_url,
             data: new_data,
             success: function (response) {
-                $(".contant").text("Ajax OK");
+                
             }
         });
     }
 
+    function add_task() {
+        text = $("#text_input").val();
+        if($("#text_input").val() != "") {
+            $("#text_input").val("");
+            $.ajax({
+            type: "GET",
+            url: "/to_do_list/ajax-req/",
+            data: {
+                action: "add-task",
+                text: text
+            },
+            success: function(data_res) {
+                $("ul").append(
+                `<li id="${data_res.id}">
+                        <input class="done" type="checkbox"> 
+                        <span class="li-item">${data_res.text}</span>                             
+                        <button class="btn delete-btn"><i class="fa fa-trash trash"></i></button> 
+                </li>`);
+                count_task();
+                paginationRender($("#select-type option:selected").val());
+                display($("#select-type option:selected").val(), page_active);
+
+                $(".delete-btn").click(function() {
+                    val_id = $(this).parent().attr('id');
+                    $(this).parent().remove();
+                    count_task();
+                    paginationRender($("#select-type option:selected").val());
+                    display($("#select-type option:selected").val(), page_active);
+                    ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
+                });
+                
+                $(".done").change( function() {
+                    val_chek = $(this).is(":checked");
+                    val_id = $(this).parent().attr('id');
+
+                    if ($(this).is(":checked")) {
+                        $(this).parent().children('span').addClass("complate");
+                    } else {
+                        $(this).parent().children('span').removeClass("complate");
+                    }
+                    count_task();
+                    paginationRender($("#select-type option:selected").val());
+                    display($("#select-type option:selected").val(), page_active);
+                    ajax_Send("/to_do_list/ajax-req/", {action: "change_one", chek: val_chek, id: val_id});
+                });
+            }});
+
+            if (page_active * col_item_on_page <= col_btn * col_item_on_page) {
+                page_active++;
+            }
+            if ($("li").length == 0) {
+                page_active = 0;
+            }
+        return false;
+        }
+    }
+
     function count_task() {
-        var all_task = $("li").length;
-        var complete_task = $(".done:checked").length;
+        let all_task = $("li").length;
+        let complete_task = $(".done:checked").length;
         if(all_task === 0) {
             $("#all-task-count").text("0");
             $("#complate-task-count").text("0");
@@ -31,32 +86,17 @@ $(function() {
 
     function display(type, page) {
         $("li").hide();
+        if (col_btn < page && page != 0) {
+            page--;
+        }
         if (type == "all") {
-            if (col_btn * col_item_on_page < $("li").length)
                 $("li").slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page ).show();
-            else {
-                page--;
-                $("li").slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page ).show();
-            }
-        } else if (type == "active") {
-            if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length )
-            $(".done:not(:checked)").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
-            else {
-                page--;
-                $(".done:not(:checked)").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
-            }
-        } else {
-            if (col_btn * col_item_on_page < $(".done:checked").parent().length  ) {
-                $(".done:checked").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
-            }
-            else {
-                page--;
-                $(".done:checked").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
+        } else if (type == "active")
+            $(".done:not(:checked)").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show(); 
+        else {
+            $(".done:checked").parent().slice((page)*col_item_on_page, page*col_item_on_page + col_item_on_page).show();
             }
         }
-    }
-
-    
 
     function renderBtn(col_batton) {
         i = 0;
@@ -73,25 +113,29 @@ $(function() {
 
     function paginationRender(type) {
         if (type=="all") {
-            col_btn = Math.floor($("li").length / col_item_on_page);
+            col_btn = Math.ceil($("li").length / col_item_on_page);
             if (col_btn * col_item_on_page < $("li").length ) {
                 renderBtn(col_btn);
             } else {
-                renderBtn(col_btn-1);
+                col_btn--;
+                renderBtn(col_btn);
             }
         } else if(type == "active") {
-            col_btn = Math.floor($(".done:not(:checked)").parent().length / col_item_on_page);
+            col_btn = Math.ceil($(".done:not(:checked)").parent().length / col_item_on_page);
             if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length)
                 renderBtn(col_btn);
             else {
-                renderBtn(col_btn-1);
+                col_btn--;
+                renderBtn(col_btn);
             }
         } else if(type=="done") {
-            col_btn = Math.floor($(".done:checked").parent().length / col_item_on_page);
-            if (col_btn * col_item_on_page < $(".done:not(:checked)").parent().length)
+            col_btn = Math.ceil($(".done:checked").parent().length / col_item_on_page);
+            if (col_btn * col_item_on_page < $(".done:checked").parent().length)
             renderBtn(col_btn);
             else {
-                renderBtn(col_btn-1);
+                col_btn--;
+                console.log(col_btn);
+                renderBtn(col_btn);
             }
         }
     }
@@ -101,7 +145,7 @@ $(function() {
         page_active = $(this).attr('id');
     });
 
-    $(".done").change( function(e) {
+    $(".done").change( function() {
         val_chek = $(this).is(":checked");
         val_id = $(this).parent().attr('id');
 
@@ -141,10 +185,10 @@ $(function() {
     $(".delete-btn").click(function() {
         val_id = $(this).parent().attr('id');
         $(this).parent().remove();
-        ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
         count_task();
         paginationRender($("#select-type option:selected").val());
         display($("#select-type option:selected").val(), page_active);
+        ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
     });
 
     $(".delete-btn-all").click(function() {
@@ -159,11 +203,12 @@ $(function() {
     $('.li-item').dblclick(function () { 
         val_id = $(this).parent().attr('id');
         old_text = $(this).text();
+        edit = true;
         $(this).attr('contenteditable', true);
         $(this).focus();
 
         $(this).bind('keydown', function(e) { 
-            if(e.keyCode==27){
+            if(e.keyCode==27 && edit){
                 e.preventDefault();
                 $(this).text(old_text);
             }
@@ -186,15 +231,27 @@ $(function() {
     });
 
     $("#select-type").change( function() {
-        page_active = 1;
+        page_active = 0;
         paginationRender($("#select-type option:selected").val());
         display($("#select-type option:selected").val(), page_active);
     });
 
-    $(".sumbit-btn").click(function () {
-        page_active = Math.floor($("li").length / col_item_on_page);
+    $(document).on("click", ".submit-btn", function() {
+        new_text = add_task();
+        if (new_text) {
+            ajax_Send("/to_do_list/ajax-req/", {action: "add-item", text: new_text});
+        }
+    });
+
+    $("#text_input").keydown(function(e) {
+        if(e.keyCode===13) {
+            new_text = add_task();
+            if (new_text) {
+                ajax_Send("/to_do_list/ajax-req/", {action: "add-item", text: new_text});
+            }
+        }
     });
 
     paginationRender($("#select-type option:selected").val());
-    display($("#select-type option:selected").val(), Math.floor($("li").length / col_item_on_page));
+    display($("#select-type option:selected").val(), page_active);
 });

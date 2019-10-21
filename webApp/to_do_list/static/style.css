@@ -8,12 +8,11 @@ body {
     text-decoration: line-through;
 }
 
-.uncomplate {
-    text-decoration: none;
-}
-
 ul {
     list-style: none;
+    font-weight: normal;
+    max-width: 80%;
+    width: 80%;
 }
 
 a {
@@ -23,6 +22,39 @@ a {
 
 .li-item {
     display: inline-block;
-    max-width: 25%;
-    width: 25%;
+    max-width: 83%;
+    width: 83%;
+    padding-top: -5px;
+}
+
+.trash { 
+    color:rgb(209, 91, 71); 
+    opacity: 1;
+}
+
+.input-section {
+    height: 33px;
+    width: 74%;
+}
+
+.delete-btn {
+    outline: 0;
+}
+
+
+.paper {
+    padding-left: 8%;
+    /* margin: 10px 11px 10px 10px; */
+    padding-top: 35px;
+    padding-bottom: 78px;
+    width: 40%;
+    background-color: #fff;
+    background-image:
+    linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
+    linear-gradient(#eee .1em, transparent .1em);
+    background-size: 100% 1.2em;
+}
+
+#pagination {
+    margin: 50px 130px;
 }
