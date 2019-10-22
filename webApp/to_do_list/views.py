@@ -4,12 +4,12 @@ from django.template import loader
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-from .models import itemLI
+from .models import ItemLi
 
 
-@csrf_exempt
+
 def main_page(request):
-    tasks = itemLI.objects.order_by('date')
+    tasks = ItemLi.objects.order_by('date')
     context = {
         'items' : tasks
     }
@@ -21,9 +21,9 @@ def ajax_task(request, **kwargs):
     if request.method == 'GET':
         if request.GET['action'] == 'add-task':
             new_text = request.GET['text']
-            item = itemLI(text=new_text)
+            item = ItemLi(text=new_text)
             item.save()
-            tasks = itemLI.objects.order_by('date')
+            tasks = ItemLi.objects.order_by('date')
             data = {"id": item.id, "text": item.text}
             json_data = json.dumps(data)
             return HttpResponse(json_data, content_type="application/json")
@@ -32,12 +32,12 @@ def ajax_task(request, **kwargs):
         if request.POST['action'] == 'change_one':
             rq_id = request.POST['id']
             check_val = request.POST['chek']
-            ed = itemLI.objects.get(pk=rq_id)
+            ed = ItemLi.objects.get(pk=rq_id)
             ed.check = False if check_val == 'false' else True
             ed.save()
         #change all tasks status
         elif request.POST['action'] == 'change_all':
-            allItem = itemLI.objects.all()
+            allItem = ItemLi.objects.all()
             check_val = request.POST['chek']
             if check_val == 'true':
                 allItem.filter(check=False).update(check=True)
@@ -46,22 +46,22 @@ def ajax_task(request, **kwargs):
         elif request.POST['action'] == 'edit-task':
             id = request.POST['id']
             text_edit = request.POST['text']
-            task = itemLI.objects.get(pk=id)
+            task = ItemLi.objects.get(pk=id)
             task.text = text_edit
             task.edit = True
             task.save()
         # delete task
         elif request.POST['action'] == 'del':
             id = request.POST['id']
-            item = itemLI.objects.get(pk=id)
+            item = ItemLi.objects.get(pk=id)
             item.delete()
         # delete all tasks are done
         elif request.POST['action'] == 'del-all':
-            items = itemLI.objects.all()
+            items = ItemLi.objects.all()
             items.filter(check=True).delete()
 
     #send contant
-    tasks = itemLI.objects.order_by('date')
+    tasks = ItemLi.objects.order_by('date')
     context = {
         'items' : tasks
     }

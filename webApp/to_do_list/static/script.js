@@ -2,7 +2,6 @@ $(function() {
     var old_text, val_id, col_btn;
     var col_item_on_page = 7;
     var page_active = Math.ceil($("li").length / col_item_on_page)-1;
-    count_task();
 
     function ajax_Send(new_url, new_data) {
         $.ajax({
@@ -17,8 +16,9 @@ $(function() {
 
     function add_task() {
         text = $("#text_input").val();
-        if($("#text_input").val() != "") {
+        if(text.trim() != "") {
             $("#text_input").val("");
+
             $.ajax({
             type: "GET",
             url: "/to_do_list/ajax-req/",
@@ -33,8 +33,12 @@ $(function() {
                         <span class="li-item">${data_res.text}</span>                             
                         <button class="btn delete-btn"><i class="fa fa-trash trash"></i></button> 
                 </li>`);
+
                 count_task();
                 paginationRender($("#select-type option:selected").val());
+                if (page_active * col_item_on_page < col_btn * col_item_on_page) {
+                    page_active = col_btn;
+                } 
                 display($("#select-type option:selected").val(), page_active);
 
                 $(".delete-btn").click(function() {
@@ -42,6 +46,9 @@ $(function() {
                     $(this).parent().remove();
                     count_task();
                     paginationRender($("#select-type option:selected").val());
+                    if (page_active * col_item_on_page >= col_btn * col_item_on_page) {
+                        page_active = col_btn;
+                    }
                     display($("#select-type option:selected").val(), page_active);
                     ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
                 });
@@ -134,7 +141,6 @@ $(function() {
             renderBtn(col_btn);
             else {
                 col_btn--;
-                console.log(col_btn);
                 renderBtn(col_btn);
             }
         }
@@ -156,6 +162,9 @@ $(function() {
         }
         count_task();
         paginationRender($("#select-type option:selected").val());
+        if (page_active * col_item_on_page >= col_btn * col_item_on_page) {
+            page_active = col_btn;
+        }
         display($("#select-type option:selected").val(), page_active);
         ajax_Send("/to_do_list/ajax-req/", {action: "change_one", chek: val_chek, id: val_id});
     });
@@ -187,6 +196,9 @@ $(function() {
         $(this).parent().remove();
         count_task();
         paginationRender($("#select-type option:selected").val());
+        if (page_active * col_item_on_page < col_btn * col_item_on_page) {
+            page_active = col_btn;
+        }
         display($("#select-type option:selected").val(), page_active);
         ajax_Send("/to_do_list/ajax-req/", {action: "del", id: val_id});
     });
@@ -252,6 +264,7 @@ $(function() {
         }
     });
 
+    count_task();
     paginationRender($("#select-type option:selected").val());
     display($("#select-type option:selected").val(), page_active);
 });

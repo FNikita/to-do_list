@@ -23,8 +23,6 @@ from . import settings
 
 
 
-
-
 from django.contrib import admin
 from django.urls import path, include
 
@@ -35,5 +33,4 @@ urlpatterns = [
 
 
 if settings.DEBUG:
-
     urlpatterns += static(settings.STATIC_URL, view=never_cache(serve))

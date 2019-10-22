@@ -8,11 +8,25 @@ body {
     text-decoration: line-through;
 }
 
+
+.input-append {
+    margin-top: 9px;
+}
+
+.enable-all {
+    margin-top: 1px;
+}
+
 ul {
+    margin-top: 38px;
     list-style: none;
     font-weight: normal;
     max-width: 80%;
     width: 80%;
+}
+
+li {
+    margin-top: 3px;
 }
 
 a {
@@ -44,7 +58,6 @@ a {
 
 .paper {
     padding-left: 8%;
-    /* margin: 10px 11px 10px 10px; */
     padding-top: 35px;
     padding-bottom: 78px;
     width: 40%;
@@ -52,9 +65,22 @@ a {
     background-image:
     linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
     linear-gradient(#eee .1em, transparent .1em);
-    background-size: 100% 1.2em;
+    background-size: 100% 1.5em;
 }
 
 #pagination {
-    margin: 50px 130px;
+    margin: 24px 130px;
+}
+
+
+@media (max-width: 1360) {
+    .paper {
+        width: 60%;
+    }
+}
+
+@media (max-width: 960) {
+    .paper {
+        width: 90%;
+    }
 }

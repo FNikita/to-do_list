@@ -1,6 +1,6 @@
 from django.db import models
 
-class itemLI(models.Model):
+class ItemLi(models.Model):
     id = models.AutoField(primary_key=True)
     check = models.BooleanField(default=False)
     text = models.TextField()
