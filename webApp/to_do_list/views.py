@@ -6,8 +6,6 @@ import json
 
 from .models import ItemLi
 
-
-
 def main_page(request):
     tasks = ItemLi.objects.order_by('date')
     context = {
@@ -17,7 +15,7 @@ def main_page(request):
 
 
 @csrf_exempt
-def ajax_task(request, **kwargs):
+def ajax_task(request):
     if request.method == 'GET':
         if request.GET['action'] == 'add-task':
             new_text = request.GET['text']
@@ -59,7 +57,6 @@ def ajax_task(request, **kwargs):
         elif request.POST['action'] == 'del-all':
             items = ItemLi.objects.all()
             items.filter(check=True).delete()
-
     #send contant
     tasks = ItemLi.objects.order_by('date')
     context = {
