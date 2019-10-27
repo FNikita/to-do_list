@@ -20,20 +20,14 @@ $(function() {
             $("#text_input").val("");
 
             $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/to_do_list/ajax-req/",
             data: {
                 action: "add-task",
                 text: text
             },
             success: function(data_res) {
-                $("ul").append(
-                `<li id="${data_res.id}">
-                        <input class="done" type="checkbox"> 
-                        <span class="li-item">${data_res.text}</span>                             
-                        <button class="btn delete-btn"><i class="fa fa-trash trash"></i></button> 
-                </li>`);
-
+                $("ul").append(data_res);
                 count_task();
                 paginationRender($("#select-type option:selected").val());
                 if (page_active * col_item_on_page < col_btn * col_item_on_page) {
